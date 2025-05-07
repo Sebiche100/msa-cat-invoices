@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 public class InvoiceHeader {
-
     private Long id;
     private String Number;
     private String customerName;
@@ -21,9 +20,7 @@ public class InvoiceHeader {
     private BigDecimal totalAmount;
     private List<InvoiceDetail> invoiceDetails;
 
-
     public void calculateSubTotalAmount(){
-
         subTotalAmount = BigDecimal.ZERO;
         for (InvoiceDetail invoiceDetail: invoiceDetails){
             invoiceDetail.calculateSubTotal();
@@ -32,12 +29,10 @@ public class InvoiceHeader {
     }
     public void calculateVatAmount (){
         vatAmount = subTotalAmount.multiply(Constant.VAT_RATE);
-
     }
 
     public void calculateTotalAmount (){
         totalAmount = subTotalAmount.add(vatAmount);
-
     }
 
 }
