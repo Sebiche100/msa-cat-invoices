@@ -6,6 +6,8 @@ import com.cat.msa.invoices.services.InvoiceHeaderService;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
+import java.util.List;
+
 @Service
 public class InvoiceHeaderServiceImpl implements InvoiceHeaderService {
 
@@ -21,6 +23,10 @@ public class InvoiceHeaderServiceImpl implements InvoiceHeaderService {
         return invoiceHeaderRepository.save(invoiceHeader);
     }
 
+    @Override
+    public List<InvoiceHeader> getAll() {
+        return invoiceHeaderRepository.findAll();
+    
     @Override
     public Optional<InvoiceHeader> findByNumber(String number) {
         return invoiceHeaderRepository.findByNumber(number);
