@@ -2,13 +2,14 @@ package com.cat.msa.invoices.controller;
 
 import com.cat.msa.invoices.domain.InvoiceHeader;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1/invoices-headers")
 public interface InvoiceHeaderApi {
 
     @PostMapping
     ResponseEntity<InvoiceHeader> save(@RequestBody InvoiceHeader invoiceHeader);
+
+    @GetMapping("/{number}")
+    ResponseEntity<InvoiceHeader> findByNumber(@PathVariable String number);
 }
