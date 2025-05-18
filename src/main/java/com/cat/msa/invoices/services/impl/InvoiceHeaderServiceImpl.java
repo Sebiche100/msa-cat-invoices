@@ -26,6 +26,7 @@ public class InvoiceHeaderServiceImpl implements InvoiceHeaderService {
     @Override
     public List<InvoiceHeader> getAll() {
         return invoiceHeaderRepository.findAll();
+    }
     
     @Override
     public Optional<InvoiceHeader> findByNumber(String number) {
