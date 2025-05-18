@@ -6,6 +6,7 @@ import com.cat.msa.invoices.services.impl.InvoiceHeaderServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -28,5 +29,11 @@ public class InvoiceHeaderController implements InvoiceHeaderApi {
     public ResponseEntity<List<InvoiceHeader>> findAll() {
         List<InvoiceHeader> invoiceHeaders = invoiceHeaderService.getAll();
         return new ResponseEntity<>(invoiceHeaders, HttpStatus.OK);
+
+    @Override  
+    public ResponseEntity<InvoiceHeader> findByNumber(String number) {
+        Optional<InvoiceHeader> invoiceOpt = invoiceHeaderService.findByNumber(number);
+        return invoiceOpt.map(invoice -> new ResponseEntity<>(invoice, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
+
     }
 }
