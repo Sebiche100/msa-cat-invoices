@@ -1,10 +1,11 @@
-package com.cat.msa.invoices.exception;
+package com.cat.msa.invoices.controller;
 
+import com.cat.msa.invoices.exception.DuplicateException;
+import com.cat.msa.invoices.exception.NoContentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class InvoiceHeaderExceptionHandler {
@@ -14,14 +15,9 @@ public class InvoiceHeaderExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
-    @ExceptionHandler(NotContentException.class)
-    public ResponseEntity<String> NotContentException(NotContentException ex) {
+    @ExceptionHandler(NoContentException.class)
+    public ResponseEntity<String> NotContentException(NoContentException ex) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Void> responseStatusExceptionHandler(ResponseStatusException ex) {
-        return ResponseEntity.status(ex.getStatusCode()).build();
     }
 
 }
