@@ -1,11 +1,11 @@
 package com.cat.msa.invoices.controller;
 
 import com.cat.msa.invoices.domain.InvoiceHeader;
+import com.cat.msa.invoices.exception.NoContentException;
 import com.cat.msa.invoices.services.InvoiceHeaderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Optional;
 import java.util.List;
 
 @RestController
@@ -31,9 +31,8 @@ public class InvoiceHeaderController implements InvoiceHeaderApi {
 
     @Override
     public ResponseEntity<InvoiceHeader> findByNumber(String number) {
-        Optional<InvoiceHeader> invoiceOpt = invoiceHeaderService.findByNumber(number);
-        return invoiceOpt.map(invoice -> new ResponseEntity<>(invoice, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
-
+        InvoiceHeader invoice = invoiceHeaderService.findByNumber(number).orElseThrow(NoContentException::new);
+        return ResponseEntity.ok(invoice);
     }
 
     @Override
