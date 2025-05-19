@@ -5,7 +5,10 @@ import com.cat.msa.invoices.exception.DuplicateException;
 import com.cat.msa.invoices.exception.NotContentException;
 import com.cat.msa.invoices.repository.InvoiceHeaderRepository;
 import com.cat.msa.invoices.services.InvoiceHeaderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.Optional;
 
 import java.util.List;
@@ -32,7 +35,11 @@ public class InvoiceHeaderServiceImpl implements InvoiceHeaderService {
 
     @Override
     public List<InvoiceHeader> getAll() {
-        return invoiceHeaderRepository.findAll();
+        List<InvoiceHeader> invoiceHeaders = invoiceHeaderRepository.findAll();
+        if (invoiceHeaders.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+        return invoiceHeaders;
     }
     
     @Override
