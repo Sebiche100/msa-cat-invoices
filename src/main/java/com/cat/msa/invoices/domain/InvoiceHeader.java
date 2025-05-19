@@ -70,7 +70,6 @@ public class InvoiceHeader {
         for (InvoiceDetail invoiceDetail : invoiceDetails) {
             invoiceDetail.setInvoiceHeader(this);
         }
-
     }
 
 }
