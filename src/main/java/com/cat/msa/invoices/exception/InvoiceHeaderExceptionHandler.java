@@ -1,7 +1,5 @@
-package com.cat.msa.invoices.controller;
+package com.cat.msa.invoices.exception;
 
-import com.cat.msa.invoices.exception.DuplicateException;
-import com.cat.msa.invoices.exception.NoContentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,8 +14,13 @@ public class InvoiceHeaderExceptionHandler {
     }
 
     @ExceptionHandler(NoContentException.class)
-    public ResponseEntity<String> NotContentException(NoContentException ex) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ex.getMessage());
+    public ResponseEntity<Void> handleNoContentException(NoContentException ex) {
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleInvoiceNotFound(NotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
 }

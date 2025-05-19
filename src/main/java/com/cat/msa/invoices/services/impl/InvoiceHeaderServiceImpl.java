@@ -3,6 +3,7 @@ package com.cat.msa.invoices.services.impl;
 import com.cat.msa.invoices.domain.InvoiceHeader;
 import com.cat.msa.invoices.exception.DuplicateException;
 import com.cat.msa.invoices.exception.NoContentException;
+import com.cat.msa.invoices.exception.NotFoundException;
 import com.cat.msa.invoices.repository.InvoiceHeaderRepository;
 import com.cat.msa.invoices.services.InvoiceHeaderService;
 import org.springframework.stereotype.Service;
@@ -22,33 +23,37 @@ public class InvoiceHeaderServiceImpl implements InvoiceHeaderService {
 
     @Override
     public InvoiceHeader createInvoiceHeader(InvoiceHeader invoiceHeader) {
-        Optional<InvoiceHeader> invoiceH = this.findByNumber(invoiceHeader.getNumber());
-        if (invoiceH.isEmpty()) {
-            invoiceHeader.calculateInvoiceAmounts();
-            return invoiceHeaderRepository.save(invoiceHeader);
-        } else {
-            throw new DuplicateException("Duplicate");
+        boolean exists = invoiceHeaderRepository.findByNumber(invoiceHeader.getNumber()).isPresent();
+        if (exists) {
+            throw new DuplicateException("Invoice with number " + invoiceHeader.getNumber() + " already exists.");
         }
+        invoiceHeader.calculateInvoiceAmounts();
+        return invoiceHeaderRepository.save(invoiceHeader);
     }
 
     @Override
     public List<InvoiceHeader> getAll() {
         List<InvoiceHeader> invoiceHeaders = invoiceHeaderRepository.findAll();
         if (invoiceHeaders.isEmpty()) {
-            throw new NoContentException("No invoice headers found");
+            throw new NoContentException();
         }
         return invoiceHeaders;
     }
     
     @Override
     public Optional<InvoiceHeader> findByNumber(String number) {
-        return invoiceHeaderRepository.findByNumber(number);
+        Optional<InvoiceHeader> existingInvoiceHeader = invoiceHeaderRepository.findByNumber(number);
+        if (existingInvoiceHeader.isEmpty()) {
+            throw new NoContentException();
+        }
+        return existingInvoiceHeader;
     }
 
     @Override
     public void deleteByNumber(String number) {
-        Optional<InvoiceHeader> invoiceHeader = this.findByNumber(number);
-        invoiceHeader.ifPresentOrElse(invoice -> invoiceHeaderRepository.delete(invoice),()->{throw new NoContentException("Invoice Header Not Content");
-        });
+        invoiceHeaderRepository.findByNumber(number).ifPresentOrElse(
+                invoiceHeaderRepository::delete,
+                () -> {throw new NotFoundException("Cannot delete: invoice with number " + number + " not found.");}
+        );
     }
 }
