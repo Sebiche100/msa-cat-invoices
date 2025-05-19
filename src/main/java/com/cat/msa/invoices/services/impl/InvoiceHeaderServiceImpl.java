@@ -1,6 +1,8 @@
 package com.cat.msa.invoices.services.impl;
 
 import com.cat.msa.invoices.domain.InvoiceHeader;
+import com.cat.msa.invoices.exception.DuplicateException;
+import com.cat.msa.invoices.exception.NotContentException;
 import com.cat.msa.invoices.repository.InvoiceHeaderRepository;
 import com.cat.msa.invoices.services.InvoiceHeaderService;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,13 @@ public class InvoiceHeaderServiceImpl implements InvoiceHeaderService {
 
     @Override
     public InvoiceHeader createInvoiceHeader(InvoiceHeader invoiceHeader) {
-        invoiceHeader.calculateInvoiceAmounts();
-        return invoiceHeaderRepository.save(invoiceHeader);
+        Optional<InvoiceHeader> invoiceH = this.findByNumber(invoiceHeader.getNumber());
+        if (invoiceH.isEmpty()) {
+            invoiceHeader.calculateInvoiceAmounts();
+            return invoiceHeaderRepository.save(invoiceHeader);
+        } else {
+            throw new DuplicateException("Duplicate");
+        }
     }
 
     @Override
@@ -31,5 +38,12 @@ public class InvoiceHeaderServiceImpl implements InvoiceHeaderService {
     @Override
     public Optional<InvoiceHeader> findByNumber(String number) {
         return invoiceHeaderRepository.findByNumber(number);
+    }
+
+    @Override
+    public void deleteByNumber(String number) {
+        Optional<InvoiceHeader> invoiceHeader = this.findByNumber(number);
+        invoiceHeader.ifPresentOrElse(invoice -> invoiceHeaderRepository.delete(invoice),()->{throw new NotContentException("Invoice Header Not Content");
+        });
     }
 }

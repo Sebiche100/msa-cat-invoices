@@ -13,4 +13,5 @@ public interface InvoiceHeaderService {
 
     Optional<InvoiceHeader> findByNumber(String number);
 
+    void deleteByNumber (String number);
 }
